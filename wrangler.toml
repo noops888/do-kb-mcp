@@ -1,0 +1,32 @@
+name = "do-kb-mcp"
+main = "src/server.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# For single DO Agent instance:
+# DO_AGENT_ENDPOINT = "https://your-agent.agents.do-ai.run/api/v1/chat/completions"
+# KB_DESCRIPTION = "Your knowledge base description"
+# Rate limiting configuration
+RATE_LIMIT_PER_WINDOW = "30"
+RATE_LIMIT_WINDOW_SECONDS = "120"
+# Global rate limiting (across all IPs)
+GLOBAL_RATE_LIMIT_PER_WINDOW = "500"
+GLOBAL_RATE_LIMIT_WINDOW_SECONDS = "120"
+# For multiple DO Agent instances (uncomment and modify):
+# DO_AGENT_ENDPOINTS = "https://agent1.agents.do-ai.run/api/v1/chat/completions,https://agent2.agents.do-ai.run/api/v1/chat/completions"
+# DO_AGENT_DESCRIPTIONS = "Agent 1 description,Agent 2 description"
+
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+# IMPORTANT: Tokens are set as secrets via 'wrangler secret put' command
+# DO NOT put tokens in this file - they will be committed to git!
+# Run these commands to set secrets:
+# wrangler secret put DO_AGENT_TOKEN           # For single agent
+# wrangler secret put DO_AGENT_TOKENS          # For multiple agents
